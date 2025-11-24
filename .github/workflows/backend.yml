@@ -1,0 +1,24 @@
+name: Deploy Backend
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'  # Chỉ chạy khi có thay đổi trong thư mục backend
+
+jobs:
+  api-deploy:
+    name: Deploy BE to Hosting
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v4
+    
+    - name: Sync files via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./backend/       # Lấy code từ thư mục backend
+        server-dir: /htdocs/api/    # QUAN TRỌNG: Đẩy vào thư mục "api" trên Hosting
